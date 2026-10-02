@@ -48,6 +48,9 @@ Format: Layer,Start,End,Style,Name,MarginL,MarginR,MarginV,Effect,Text
 ev, sr = [], []
 for n, ch in enumerate(chunks, 1):
     end_chunk = ch[-1]["e"]
+    if C.get("animation") == "simple_fade":   # estilo referencia: bloco curto, sem destaque por palavra
+        ev.append(f"Dialogue: 0,{ts(ch[0]['s'])},{ts(end_chunk)},Sizebay,,0,0,0,,{{\\fad(50,0)}}{' '.join(x['t'] for x in ch)}")
+        sr.append(f"{n}\n{srt(ch[0]['s'])} --> {srt(end_chunk)}\n{' '.join(x['t'] for x in ch)}\n"); continue
     for k, w in enumerate(ch):
         st = w["s"]; en = ch[k + 1]["s"] if k + 1 < len(ch) else end_chunk
         parts = []

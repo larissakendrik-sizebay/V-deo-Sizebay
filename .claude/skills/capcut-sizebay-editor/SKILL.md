@@ -8,6 +8,9 @@ description: Edita vídeos verticais (Reels/TikTok/Shorts) da Sizebay para final
 Pipeline: **transcrever → analisar → decidir edição (EDL) → renderizar rough cut → legendas → CapCut**.
 Pasta de trabalho: `out/<nome-do-video>/`. Scripts em `scripts/`. Marca em `brand/brand.json` (fontes, cores, posição da legenda, LUFS) - **leia antes de gerar legendas** e avise o usuário se ainda estiver com valores padrão (`_note`).
 
+## Estilo de referência (vídeo de exemplo analisado)
+Entrevista vertical 720x1280, 109 s, ~33 cortes (≈3,3 s por plano), alternando 2-3 câmeras/locais, com flashes de cor sutis em algumas transições, loudness -14,5 LUFS. Legenda: **minúsculas, branca, sans geométrica bold (tipo Montserrat/Raleway), sem contorno, sombra suave, centralizada a ~63% da altura (meio-baixo), 1-3 palavras por vez**, sem cor de destaque. Já refletido em `brand/brand.json` (`animation: simple_fade`); troque para `pop_highlight_word` + `highlight_color` para legenda com palavra ativa colorida. **Falta confirmar a fonte oficial da Sizebay** (colocar o .ttf em `assets/fonts/`).
+
 ## Limites honestos
 - O CapCut não tem API oficial e o `draft_content.json` das versões recentes é criptografado. O caminho **confiável** é entregar `rough.mp4` + `captions.srt/.ass` + EDL para importar. `scripts/capcut_draft.py` (pycapcut) é opcional e pode quebrar entre versões.
 - Legenda estilizada final: o `.ass` serve para pré-visualização (`ffmpeg -vf ass=...`); no CapCut, aplique a fonte/estilo da marca sobre o `.srt` (Legendas → Importar legenda → estilo salvo "Sizebay").
