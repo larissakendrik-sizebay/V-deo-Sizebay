@@ -1,0 +1,22 @@
+{
+  "_note": "PREENCHER: fontes, cores e posicao da legenda da Sizebay (e do estilo do reel de referencia).",
+  "canvas": {"width": 1080, "height": 1920, "fps": 30},
+  "caption": {
+    "font_family": "Montserrat",
+    "font_file": "assets/fonts/Montserrat-ExtraBold.ttf",
+    "font_size": 78,
+    "uppercase": true,
+    "words_per_chunk": 3,
+    "max_chars_per_line": 18,
+    "text_color": "#FFFFFF",
+    "highlight_color": "#FFD400",
+    "outline_color": "#000000",
+    "outline_px": 6,
+    "shadow_px": 2,
+    "position": "lower_third",
+    "margin_bottom_px": 480,
+    "animation": "pop_highlight_word"
+  },
+  "palette": {"primary": "#000000", "accent": "#FFD400", "bg": "#FFFFFF"},
+  "audio": {"target_lufs": -14, "true_peak_db": -1.5, "music_under_voice_db": -22}
+}
