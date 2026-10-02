@@ -1,13 +1,13 @@
 {
-  "_note": "Estilo derivado do video de referencia (entrevista 720x1280). Fonte real da Sizebay ainda a confirmar: Montserrat e substituta aproximada.",
+  "_note": "Fonte oficial: Outfit (Google Fonts). Cor de destaque (palette.accent) ainda e PLACEHOLDER.",
   "canvas": {
     "width": 1080,
     "height": 1920,
     "fps": 30
   },
   "caption": {
-    "font_family": "Montserrat",
-    "font_file": "assets/fonts/Montserrat-Bold.ttf",
+    "font_family": "Outfit",
+    "font_file": "assets/fonts/Outfit-Bold.ttf",
     "font_size": 64,
     "uppercase": false,
     "words_per_chunk": 2,
@@ -23,8 +23,9 @@
   },
   "palette": {
     "primary": "#FFFFFF",
-    "accent": "#FFFFFF",
-    "bg": "#000000"
+    "accent": "#FFD400",
+    "bg": "#000000",
+    "_note": "accent = PLACEHOLDER, trocar pela cor Sizebay"
   },
   "audio": {
     "target_lufs": -14,

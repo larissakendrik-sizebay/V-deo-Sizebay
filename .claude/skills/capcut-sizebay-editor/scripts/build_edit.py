@@ -7,7 +7,8 @@ edl.json:
 { "keep":[{"start":0,"end":5.2,"pace":"fast|normal|slow|authority"}]  // ou "cuts":[{start,end}]
   "hook":{"start":31.2,"end":33.0,"remove_original":false},
   "music":"assets/music/x.mp3", "sfx":[{"t":0.0,"file":"assets/sfx/whoosh.wav","gain_db":-12}],
-  "frames":[1.0,1.14,1.0,1.26] }                                   // ciclo de zoom entre planos"""
+  "frames":[1.0,1.14,1.0,1.26],
+  "callouts":[{"t":0.0,"dur":2.0,"kind":"stat|keyword|keyword_box|quote","text":"78%","sub":"dos empresarios ainda nao sabem"}] }  // t = tempo na SAIDA; "blur_in":true no keep = transicao com blur                                   // ciclo de zoom entre planos"""
 import argparse, json, math, os, subprocess, sys
 sys.path.insert(0, os.path.dirname(__file__))
 from common import keep_from_edl, subtract
@@ -47,15 +48,16 @@ for k in keep:
     L = k["end"] - k["start"]; tgt = TARGET[pace_of(k)]
     n = max(1, round(L / tgt)) if not k.get("is_hook") else 1
     edges = [k["start"]] + [snap(k["start"] + L * i / n, k["start"], k["end"]) for i in range(1, n)] + [k["end"]]
-    shots += [(edges[i], edges[i + 1]) for i in range(n) if edges[i + 1] - edges[i] > .08]
+    shots += [(edges[i], edges[i + 1], bool(k.get("blur_in")) and i == 0) for i in range(n) if edges[i + 1] - edges[i] > .08]
 
 frames = EDL.get("frames", [1.0, 1.14, 1.0, 1.26])
 FADE = 0.025  # fade de audio nas emendas: cortes suaves, sem estalo
 fc, outpos, timeline = [], 0.0, []
-for i, (s, e) in enumerate(shots):
+for i, (s, e, blur) in enumerate(shots):
     z = frames[i % len(frames)]; d = e - s
     fc.append(f"[0:v]trim={s:.3f}:{e:.3f},setpts=PTS-STARTPTS,crop=iw/{z}:ih/{z},"
-              f"scale={cv['width']}:{cv['height']}:force_original_aspect_ratio=increase,crop={cv['width']}:{cv['height']},setsar=1,fps={cv['fps']}[v{i}]")
+              f"scale={cv['width']}:{cv['height']}:force_original_aspect_ratio=increase,crop={cv['width']}:{cv['height']},setsar=1,fps={cv['fps']}"
+              + (",gblur=sigma=22:enable='lt(t,0.18)',gblur=sigma=8:enable='between(t,0.18,0.3)'" if blur else "") + f"[v{i}]")
     fc.append(f"[0:a]atrim={s:.3f}:{e:.3f},asetpts=PTS-STARTPTS,afade=t=in:d={FADE},afade=t=out:st={max(d-FADE,0):.3f}:d={FADE}[a{i}]")
     timeline.append({"src_start": s, "src_end": e, "out_start": outpos, "out_end": outpos + d, "zoom": z})
     outpos += d

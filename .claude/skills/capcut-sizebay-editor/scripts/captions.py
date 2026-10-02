@@ -7,6 +7,7 @@ sys.path.insert(0, os.path.dirname(__file__))
 ap = argparse.ArgumentParser()
 ap.add_argument("transcript"); ap.add_argument("timeline"); ap.add_argument("outbase")
 ap.add_argument("--brand", default=os.path.join(os.path.dirname(__file__), "..", "brand", "brand.json"))
+ap.add_argument("--edl")
 a = ap.parse_args()
 B = json.load(open(a.brand)); C, V = B["caption"], B["canvas"]
 tl = json.load(open(a.timeline))["shots"]
@@ -63,3 +64,23 @@ for n, ch in enumerate(chunks, 1):
 open(a.outbase + ".ass", "w", encoding="utf-8").write(hdr + "\n".join(ev) + "\n")
 open(a.outbase + ".srt", "w", encoding="utf-8").write("\n".join(sr))
 print(f"{len(chunks)} blocos -> {a.outbase}.ass / .srt")
+
+# ---- callouts (dado em destaque, palavra-chave, caixa, balao de citacao) -> captions_callouts.ass
+if a.edl and json.load(open(a.edl)).get("callouts"):
+    P = B["palette"]; acc = bgr(P["accent"]); wh = bgr("#FFFFFF")
+    sty = lambda n, sz, col, bs=1, back=None, al=5, mv=0: (f"Style: {n},{C['font_family']},{sz},{col},{col},{back if bs==3 else bgr('#000000')},{'&H64000000&' if bs==3 else (back or '&H64000000&')},-1,0,0,0,100,100,0,0,{bs},{4 if bs==3 else 0},{0 if bs==3 else 3},{al},80,80,{mv},1")
+    styles = "\n".join([sty("stat", 190, acc, al=8, mv=int(V['height']*.38)), sty("statsub", 62, wh, al=8, mv=int(V['height']*.38)+210),
+                        sty("keyword", 150, acc, al=5), sty("keybox", 96, bgr("#000000"), bs=3, back=bgr("#FFFFFF"), al=5),
+                        sty("quote", 58, wh, bs=3, back=acc, al=8, mv=int(V['height']*.17))])
+    h2 = hdr.split("[V4+ Styles]")[0] + "[V4+ Styles]\n" + hdr.split("[V4+ Styles]\n")[1].split("\n")[0] + "\n" + styles + "\n\n[Events]\nFormat: Layer,Start,End,Style,Name,MarginL,MarginR,MarginV,Effect,Text\n"
+    ev2 = []
+    for c in json.load(open(a.edl))["callouts"]:
+        st, en = c["t"], c["t"] + c.get("dur", 2.0); k = c["kind"]; txt = c["text"]
+        pop = "{\\fad(80,80)\\fscx60\\fscy60\\t(0,150,\\fscx100\\fscy100)}"
+        if k == "stat":
+            ev2.append(f"Dialogue: 1,{ts(st)},{ts(en)},stat,,0,0,0,,{pop}{txt}")
+            if c.get("sub"): ev2.append(f"Dialogue: 1,{ts(st)},{ts(en)},statsub,,0,0,0,,{{\\fad(80,80)}}{c['sub']}")
+        else:
+            ev2.append(f"Dialogue: 1,{ts(st)},{ts(en)},{ {'keyword':'keyword','keyword_box':'keybox','quote':'quote'}[k] },,0,0,0,,{pop}{txt}")
+    open(a.outbase + "_callouts.ass", "w", encoding="utf-8").write(h2 + "\n".join(ev2) + "\n")
+    print(f"{len(ev2)} callouts -> {a.outbase}_callouts.ass")

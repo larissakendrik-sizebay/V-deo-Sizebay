@@ -9,7 +9,17 @@ Pipeline: **transcrever → analisar → decidir edição (EDL) → renderizar r
 Pasta de trabalho: `out/<nome-do-video>/`. Scripts em `scripts/`. Marca em `brand/brand.json` (fontes, cores, posição da legenda, LUFS) - **leia antes de gerar legendas** e avise o usuário se ainda estiver com valores padrão (`_note`).
 
 ## Estilo de referência (vídeo de exemplo analisado)
-Entrevista vertical 720x1280, 109 s, ~33 cortes (≈3,3 s por plano), alternando 2-3 câmeras/locais, com flashes de cor sutis em algumas transições, loudness -14,5 LUFS. Legenda: **minúsculas, branca, sans geométrica bold (tipo Montserrat/Raleway), sem contorno, sombra suave, centralizada a ~63% da altura (meio-baixo), 1-3 palavras por vez**, sem cor de destaque. Já refletido em `brand/brand.json` (`animation: simple_fade`); troque para `pop_highlight_word` + `highlight_color` para legenda com palavra ativa colorida. **Falta confirmar a fonte oficial da Sizebay** (colocar o .ttf em `assets/fonts/`).
+Entrevista vertical 720x1280, 109 s, ~33 cortes (≈3,3 s por plano), alternando 2-3 câmeras/locais, com flashes de cor sutis em algumas transições, loudness -14,5 LUFS. Legenda: **minúsculas, branca, sans geométrica bold (tipo Outfit), sem contorno, sombra suave, centralizada a ~63% da altura (meio-baixo), 1-3 palavras por vez**, sem cor de destaque. Já refletido em `brand/brand.json` (`animation: simple_fade`); troque para `pop_highlight_word` + `highlight_color` para legenda com palavra ativa colorida. **Fonte oficial da Sizebay: Outfit (Google Fonts)**, em `assets/fonts/` (Bold/SemiBold). Instale no sistema antes de renderizar o `.ass` e no CapCut.
+
+### Referência 2 (painel/entrevista de evento, 40 s)
+~11 cortes (≈3,6 s/plano), -14,1 LUFS. Padrões a reproduzir:
+- **Hook visual com dado**: 1º frame já com número gigante na cor de destaque + frase curta embaixo (`callouts` kind `stat`, ex.: "78%" + "dos empresários ainda não sabem"). Fala e texto entram juntos nos primeiros 2 s.
+- **Legenda**: branca, bold, centro-baixo, 1-3 palavras; peso/caixa varia levemente (ênfase) - use ênfase só em palavras-chave.
+- **Citação encenada** ("Ah, eu to no simples…") em **balão** sobre fundo desfocado (`quote`).
+- **Palavra-chave em caixa** ("PENALIZADO") e **palavra grande** sobre montagem de vários entrevistados em tela dividida ("Multas") (`keyword_box` / `keyword`; a tela dividida é feita no CapCut).
+- **Transição com blur** ao trocar de pessoa/assunto (`"blur_in":true` no trecho do `keep`).
+- Legenda digitada com cursor em trechos de citação: fazer no CapCut (efeito "Máquina de escrever").
+Cores de destaque vêm de `brand.palette.accent` (o azul do vídeo é de outra marca; **use a cor Sizebay**).
 
 ## Limites honestos
 - O CapCut não tem API oficial e o `draft_content.json` das versões recentes é criptografado. O caminho **confiável** é entregar `rough.mp4` + `captions.srt/.ass` + EDL para importar. `scripts/capcut_draft.py` (pycapcut) é opcional e pode quebrar entre versões.
